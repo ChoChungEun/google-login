@@ -1,30 +1,34 @@
-# React + TypeScript + Vite
+# 사전준비
+- 구글 클라우드 플랫폼에서 새 프로젝트 생성
+- 승인된 자바스크립트 원본 URI 주소 등록: http://localhost, http://localhost:5173
+- 승인된 리디렉션 URI 등록: http://localhost:5173, http://localhost:5173
+- 클라이언트 ID 생성: 443062116252-in5vlh0mtght5epv2smldemt1b3ko7aj.apps.googleusercontent.com
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# FLOW
+- 로그인 화면 -> 로그인 버튼 클릭 -> 구글 로그인 화면으로 이동 -> 로그인 성공 -> onSuccess 인자로 res 데이터 받아옴
+ 
+```
+function App() {
+  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
-Currently, two official plugins are available:
+  const success = (res: any) => {
+    console.log("success", jwtDecode(res.credential));
+  };
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+  const error = () => {
+    console.log("error");
+  };
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
+  return (
+    <GoogleOAuthProvider clientId={clientId}>
+      <GoogleLogin onSuccess={success} onError={error} />
+    </GoogleOAuthProvider>
+  );
 }
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+# 추가 설명
+- 실제 서버와 구현할때는 onSuccess 인자로 받아온 credential 을 서버로 넘겨주면 된다.
+- 그러면 서버에서는 credential 로 로직 수행 후 access_token 을 넘겨준다.
+
+
