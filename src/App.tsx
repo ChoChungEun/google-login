@@ -5,16 +5,16 @@ import { jwtDecode } from "jwt-decode";
 function App() {
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
+  const success = (res: any) => {
+    console.log("success", jwtDecode(res.credential));
+  };
+
+  const error = () => {
+    console.log("error");
+  };
   return (
     <GoogleOAuthProvider clientId={clientId}>
-      <GoogleLogin
-        onSuccess={(res: any) => {
-          console.log("success", jwtDecode(res.credential));
-        }}
-        onError={() => {
-          console.log("error");
-        }}
-      />
+      <GoogleLogin onSuccess={success} onError={error} />
     </GoogleOAuthProvider>
   );
 }
